@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Global catalog · Distributed Library</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <style>
+    :root {
+      --bg: #020617;
+      --card-bg: #020817;
+      --accent: #38bdf8;
+      --text: #e5e7eb;
+      --text-muted: #9ca3af;
+      --border-subtle: rgba(148, 163, 184, 0.25);
+      --success: #4ade80;
+      --danger: #f97373;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+        sans-serif;
+      background: radial-gradient(circle at top, #1f2937 0, #020617 55%);
+      color: var(--text);
+      min-height: 100vh;
+    }
+
+    .page {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 20px 24px 32px;
+    }
+
+    /* Top nav ----------------------------------------------------- */
+    .topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 24px;
+    }
+
+    .brand-small {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 15px;
+      font-weight: 500;
+    }
+
+    .brand-logo {
+      width: 32px;
+      height: 32px;
+      border-radius: 999px;
+      background: radial-gradient(circle at 30% 30%, #38bdf8, #0ea5e9 45%, #0f172a 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #e0f2fe;
+      font-weight: 700;
+      font-size: 16px;
+      box-shadow: 0 0 18px rgba(56, 189, 248, 0.5);
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 16px;
+      font-size: 13px;
+    }
+
+    .nav-link {
+      color: var(--text-muted);
+      text-decoration: none;
+      padding: 4px 0;
+    }
+
+    .nav-link.active {
+      color: var(--text);
+      border-bottom: 2px solid var(--accent);
+    }
+
+    .nav-link:hover {
+      color: #f9fafb;
+    }
+
+    /* Header + search -------------------------------------------- */
+    .catalog-header {
+      margin-bottom: 16px;
+    }
+
+    .catalog-title {
+      font-size: 22px;
+      font-weight: 600;
+      margin-bottom: 6px;
+    }
+
+    .catalog-subtitle {
+      font-size: 13px;
+      color: var(--text-muted);
+    }
+
+    .search-bar {
+      margin-top: 16px;
+      display: flex;
+      gap: 10px;
+      align-items: center;
+    }
+
+    .search-input-wrap {
+      flex: 1;
+      background: rgba(15, 23, 42, 0.9);
+      border-radius: 999px;
+      border: 1px solid rgba(55, 65, 81, 0.9);
+      padding: 2px 4px 2px 14px;
+      display: flex;
+      align-items: center;
+    }
+
+    .search-input {
+      flex: 1;
+      border: none;
+      background: transparent;
+      color: var(--text);
+      font-size: 13px;
+      padding: 8px 4px;
+      outline: none;
+    }
+
+    .search-input::placeholder {
+      color: rgba(148, 163, 184, 0.7);
+    }
+
+    .btn-search {
+      border-radius: 999px;
+      padding: 9px 18px;
+      font-size: 13px;
+      font-weight: 500;
+      border: none;
+      cursor: pointer;
+      background: linear-gradient(135deg, #38bdf8, #0ea5e9);
+      color: #0b1120;
+      box-shadow: 0 8px 25px rgba(56, 189, 248, 0.4);
+      white-space: nowrap;
+    }
+
+    .search-hint {
+      margin-top: 8px;
+      font-size: 11px;
+      color: var(--text-muted);
+    }
+
+    /* Table shell ------------------------------------------------ */
+    .table-shell {
+      margin-top: 16px;
+      border-radius: 18px;
+      border: 1px solid rgba(31, 41, 55, 0.95);
+      background: radial-gradient(circle at top, #050816 0, #020617 70%);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .table-header,
+    .table-row {
+      display: grid;
+      grid-template-columns: 2.3fr 1.4fr 1.5fr 3.2fr;
+      font-size: 13px;
+    }
+
+    .table-header {
+      background: rgba(15, 23, 42, 0.98);
+      color: var(--text-muted);
+      border-bottom: 1px solid rgba(55, 65, 81, 0.9);
+    }
+
+    .table-cell {
+      padding: 10px 14px;
+    }
+
+    .cell-title {
+      font-weight: 500;
+    }
+
+    .table-body {
+      max-height: 460px;
+      overflow-y: auto;
+    }
+
+    .table-row:nth-child(odd) {
+      background: rgba(15, 23, 42, 0.82);
+    }
+
+    .table-row:nth-child(even) {
+      background: rgba(15, 23, 42, 0.65);
+    }
+
+    .branches-cell {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      align-items: flex-start;
+    }
+
+    .table-footer {
+      padding: 8px 14px;
+      font-size: 11px;
+      color: var(--text-muted);
+      border-top: 1px solid rgba(31, 41, 55, 0.9);
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+      align-items: center;
+    }
+
+    /* Branch pill / borrow button -------------------------------- */
+    .branch-pill {
+      border-radius: 999px;
+      padding: 3px 9px;
+      font-size: 11px;
+      border: 1px solid rgba(148, 163, 184, 0.55);
+      background: rgba(15, 23, 42, 0.9);
+      color: var(--text);
+      cursor: pointer;
+      white-space: nowrap;
+      transition: background 0.12s ease-out, transform 0.08s ease-out,
+        border-color 0.12s ease-out;
+    }
+
+    .branch-pill:hover {
+      background: rgba(37, 99, 235, 0.22);
+      border-color: var(--accent);
+      transform: translateY(-1px);
+    }
+
+    .branch-pill--empty {
+      cursor: default;
+      color: rgba(148, 163, 184, 0.8);
+      border-style: dashed;
+      border-color: rgba(75, 85, 99, 0.9);
+      background: rgba(15, 23, 42, 0.6);
+    }
+
+    .branch-pill--empty:hover {
+      transform: none;
+      background: rgba(15, 23, 42, 0.6);
+      border-color: rgba(75, 85, 99, 0.9);
+    }
+
+    /* Catalog status / notifications ----------------------------- */
+    .catalog-status {
+      font-size: 11px;
+      min-height: 14px;
+    }
+
+    .catalog-status--success {
+      color: var(--success);
+    }
+
+    .catalog-status--error {
+      color: var(--danger);
+    }
+
+    .catalog-status--pending {
+      color: var(--accent);
+    }
+
+    @media (max-width: 900px) {
+      .table-header,
+      .table-row {
+        grid-template-columns: 2fr 1.4fr 1.7fr 3.4fr;
+      }
+    }
+
+    @media (max-width: 700px) {
+      .page {
+        padding-inline: 12px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <div class="topbar">
+      <div class="brand-small">
+        <div class="brand-logo">DL</div>
+        <div>Distributed Library</div>
+      </div>
+      <nav class="nav-links">
+        <a href="index.html" class="nav-link">Dashboard</a>
+        <a href="catalog.html" class="nav-link active">Catalog</a>
+        <a href="branches.html" class="nav-link">Branches</a>
+      </nav>
+    </div>
+
+    <header class="catalog-header">
+      <h1 class="catalog-title">Global catalog</h1>
+      <p class="catalog-subtitle">
+        Browse everything in the system and see where copies are available.
+      </p>
+
+      <div class="search-bar">
+        <div class="search-input-wrap">
+          <input
+            id="search-input"
+            class="search-input"
+            type="text"
+            placeholder="Search by title, author, or ISBN..."
+          />
+        </div>
+        <button id="search-btn" class="btn-search">Search</button>
+      </div>
+      <div class="search-hint">
+        Showing all titles by default. Type to filter the list — results update instantly.
+      </div>
+    </header>
+
+    <section class="table-shell">
+      <div class="table-header">
+        <div class="table-cell">Title</div>
+        <div class="table-cell">Author</div>
+        <div class="table-cell">ISBN</div>
+        <div class="table-cell">Branches &amp; availability</div>
+      </div>
+
+      <div id="catalog-rows" class="table-body">
+        <!-- rows injected by catalog.js -->
+      </div>
+
+      <div class="table-footer">
+        <div id="catalog-count">0 titles shown.</div>
+        <div id="catalog-status" class="catalog-status">
+          To borrow a book, first sign in on the Dashboard page, then click a branch badge with available copies.
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <script src="catalog.js"></script>
+</body>
+</html>
